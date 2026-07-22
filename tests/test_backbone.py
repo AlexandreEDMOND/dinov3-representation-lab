@@ -1,10 +1,13 @@
 from types import SimpleNamespace
 import unittest
+from pathlib import Path
 
 import torch
 
 from dinov3_representation_lab.backbone import (
+    BackboneSpec,
     extract_final_features,
+    load_backbone,
     make_lvd1689m_eval_transform,
 )
 
@@ -37,3 +40,14 @@ class BackboneTests(unittest.TestCase):
         self.assertEqual(patch_tokens.shape, (2, 196, 3))
         self.assertFalse(global_embeddings.requires_grad)
         self.assertFalse(patch_tokens.requires_grad)
+
+    def test_rejects_missing_local_checkpoint_directory(self) -> None:
+        with self.assertRaisesRegex(ValueError, "not a directory"):
+            load_backbone(
+                BackboneSpec(
+                    model_id="facebook/example",
+                    revision="0" * 40,
+                    device="cpu",
+                    local_path=Path("missing-checkpoint"),
+                )
+            )

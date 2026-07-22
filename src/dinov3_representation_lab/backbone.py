@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 
 LVD1689M_MEAN = (0.485, 0.456, 0.406)
@@ -14,6 +15,7 @@ class BackboneSpec:
     model_id: str
     revision: str
     device: str
+    local_path: Path | None = None
 
 
 def _torch():
@@ -58,17 +60,23 @@ def make_lvd1689m_eval_transform(resolution: int):
 
 
 def load_backbone(spec: BackboneSpec):
-    """Load the pinned Hugging Face DINOv3 checkpoint in frozen evaluation mode."""
-    torch = _torch()
+    """Load a pinned Hub checkpoint or an explicitly supplied local checkpoint."""
+    _torch()
     try:
         from transformers import AutoModel
     except ImportError as error:  # pragma: no cover - exercised only without dependencies
         raise RuntimeError("Install transformers with 'uv sync' before running Phase 1.") from error
 
     device = resolve_device(spec.device)
+    if spec.local_path is not None and not spec.local_path.is_dir():
+        raise ValueError(f"Local model path is not a directory: {spec.local_path}")
+    source = str(spec.local_path) if spec.local_path is not None else spec.model_id
+    load_kwargs = {} if spec.local_path is not None else {"revision": spec.revision}
     try:
-        model = AutoModel.from_pretrained(spec.model_id, revision=spec.revision)
+        model = AutoModel.from_pretrained(source, **load_kwargs)
     except OSError as error:
+        if spec.local_path is not None:
+            raise RuntimeError(f"Could not load the local checkpoint at {spec.local_path}.") from error
         raise RuntimeError(
             "Could not download the DINOv3 checkpoint. Accept its Hugging Face access "
             "conditions and authenticate locally before retrying."
