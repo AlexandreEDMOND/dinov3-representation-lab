@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local datasets and model caches
+data/imagenet/
+data/cache/
+.cache/
+
+# Reproducible but potentially large generated artifacts
+outputs/
+
+# Editor and operating-system files
+.DS_Store
+.vscode/

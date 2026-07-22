@@ -95,3 +95,15 @@ docs/                 experiment reports and figures selected for publication
 ## Roadmap
 
 See [ROADMAP.md](ROADMAP.md) for ordered milestones, acceptance criteria, and the planned experiment matrix.
+
+## Development setup
+
+The project uses [uv](https://docs.astral.sh/uv/) and Python 3.11 or later.
+
+```bash
+uv sync
+uv run dinov3-lab-smoke
+uv run python -m unittest discover -s tests -v
+```
+
+The smoke command requires neither ImageNet nor a GPU. It writes the fully resolved configuration to `outputs/smoke/resolved-config.json`; generated outputs remain outside version control.

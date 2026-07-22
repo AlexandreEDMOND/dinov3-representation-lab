@@ -1,0 +1,10 @@
+[experiment]
+name = "smoke"
+seed = 42
+
+[runtime]
+device = "auto"
+
+[paths]
+data_dir = "data"
+output_dir = "outputs/smoke"
