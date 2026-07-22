@@ -13,7 +13,7 @@ from .backbone import BackboneSpec, extract_final_features, load_backbone, make_
 from .cache import FeatureCache
 from .cli import run_smoke, validate_config
 from .data import ImageNetLayout, ImageNetSample, samples_for_split, select_deterministic_subset, validate_imagenet_layout
-from .phase1 import _file_sha256, _require_pinned_revision, _section
+from .phase1 import _require_pinned_revision, _section
 
 
 def _batch_ranges(total: int, batch_size: int) -> tuple[tuple[int, int], ...]:
@@ -100,7 +100,6 @@ def run_feature_cache(
     config_path: Path,
     imagenet_root: Path | None = None,
     output_dir: Path | None = None,
-    model_path: Path | None = None,
 ) -> Path:
     """Create or reuse `[CLS]` and mean-patch global embedding caches."""
     with config_path.open("rb") as config_file:
@@ -126,7 +125,7 @@ def run_feature_cache(
     ranges = _batch_ranges(subset_size, int(dataset["batch_size"]))
     dtype_name = str(cache_config["dtype"])
     output_dtype = _dtype(dtype_name)
-    checkpoint_sha256 = _file_sha256(model_path / "model.safetensors") if model_path else None
+    checkpoint_sha256 = None
     class_mapping_sha256 = hashlib.sha256(
         json.dumps(layout.class_to_idx, sort_keys=True).encode()
     ).hexdigest()
@@ -173,7 +172,6 @@ def run_feature_cache(
                 model_id=str(model["id"]),
                 revision=revision,
                 device=str(runtime["device"]),
-                local_path=model_path,
             )
         )
         backbone_loaded = True
@@ -202,8 +200,7 @@ def run_feature_cache(
     if not all(done for split_done in completion.values() for done in split_done.values()):
         raise RuntimeError("Feature cache extraction did not complete.")
     record = {
-        "checkpoint_source": str(model_path.resolve()) if model_path else model["id"],
-        "checkpoint_sha256": checkpoint_sha256,
+        "checkpoint_source": model["id"],
         "backbone_loaded": backbone_loaded,
         "cache": {
             split: {
@@ -225,13 +222,11 @@ def main() -> int:
     parser.add_argument("--config", type=Path, default=Path("configs/phase2-smoke.toml"))
     parser.add_argument("--imagenet-root", type=Path)
     parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--model-path", type=Path)
     args = parser.parse_args()
     result_path = run_feature_cache(
         config_path=args.config,
         imagenet_root=args.imagenet_root,
         output_dir=args.output_dir,
-        model_path=args.model_path,
     )
     print(f"Wrote feature cache report to {result_path}")
     return 0

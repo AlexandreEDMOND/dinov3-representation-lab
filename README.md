@@ -129,17 +129,6 @@ writes global-embedding and final patch-token shapes to
 `outputs/phase1-smoke/metrics/feature-smoke.json`. The pinned checkpoint revision and
 the selected sample paths are stored with the result.
 
-### Temporary local checkpoint
-
-While access to the official gated checkpoint is pending, a locally supplied
-Transformers-compatible checkpoint can exercise the pipeline without authentication:
-
-```bash
-uv run dinov3-lab-feature-smoke \
-  --imagenet-root data/imagenette2-160 \
-  --model-path /path/to/local/dinov3-checkpoint
-```
-
 ## Phase 2: reusable feature cache
 
 The cache command stores only L2-normalized global embeddings: `[CLS]` and mean-patch

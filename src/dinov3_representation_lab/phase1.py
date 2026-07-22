@@ -28,22 +28,10 @@ def _require_pinned_revision(revision: object) -> str:
     return revision
 
 
-def _file_sha256(path: Path) -> str | None:
-    """Hash local weights when available to make an external checkpoint traceable."""
-    if not path.is_file():
-        return None
-    digest = hashlib.sha256()
-    with path.open("rb") as checkpoint_file:
-        for chunk in iter(lambda: checkpoint_file.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def run_feature_smoke(
     config_path: Path,
     imagenet_root: Path | None = None,
     output_dir: Path | None = None,
-    model_path: Path | None = None,
 ) -> Path:
     """Extract and record final DINOv3 features for a seeded ten-image subset."""
     with config_path.open("rb") as config_file:
@@ -88,7 +76,6 @@ def run_feature_smoke(
             model_id=str(model["id"]),
             revision=revision,
             device=str(runtime["device"]),
-            local_path=model_path,
         )
     )
     device = next(backbone.parameters()).device
@@ -98,10 +85,7 @@ def run_feature_smoke(
     record = {
         "model_id": model["id"],
         "model_revision": revision,
-        "checkpoint_source": str(model_path.resolve()) if model_path is not None else model["id"],
-        "checkpoint_sha256": _file_sha256(model_path / "model.safetensors")
-        if model_path is not None
-        else None,
+        "checkpoint_source": model["id"],
         "device": str(device),
         "split": split,
         "seed": experiment["seed"],
@@ -135,17 +119,11 @@ def main() -> int:
     parser.add_argument("--config", type=Path, default=Path("configs/phase1-smoke.toml"))
     parser.add_argument("--imagenet-root", type=Path)
     parser.add_argument("--output-dir", type=Path)
-    parser.add_argument(
-        "--model-path",
-        type=Path,
-        help="Local Transformers checkpoint directory; its SHA-256 is recorded in metrics.",
-    )
     args = parser.parse_args()
     result_path = run_feature_smoke(
         config_path=args.config,
         imagenet_root=args.imagenet_root,
         output_dir=args.output_dir,
-        model_path=args.model_path,
     )
     print(f"Wrote feature smoke metrics to {result_path}")
     return 0
