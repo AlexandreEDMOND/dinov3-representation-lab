@@ -74,7 +74,7 @@ The first complete milestone is reached when:
 ## Repository layout (target)
 
 ```text
-src/dinov3_lab/       feature extraction, evaluation, visualization, utilities
+src/dinov3_representation_lab/  feature extraction, evaluation, visualization, utilities
 configs/              versioned experiment configurations
 scripts/              small command-line entry points
 notebooks/            exploratory, non-source-of-truth analysis
@@ -107,3 +107,7 @@ uv run python -m unittest discover -s tests -v
 ```
 
 The smoke command requires neither ImageNet nor a GPU. It writes the fully resolved configuration to `outputs/smoke/resolved-config.json`; generated outputs remain outside version control.
+
+The smoke configuration records the baseline experiment contract: paths, device, seed,
+model identifier, selected layer, pooling method, resolution, and dataset split. Future
+experiment configurations must keep these fields so runs remain comparable.

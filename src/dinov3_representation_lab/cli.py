@@ -9,10 +9,36 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 
+REQUIRED_CONFIG_KEYS = (
+    ("experiment", "name"),
+    ("experiment", "seed"),
+    ("runtime", "device"),
+    ("paths", "data_dir"),
+    ("paths", "output_dir"),
+    ("model", "id"),
+    ("features", "layer"),
+    ("features", "pooling"),
+    ("features", "resolution"),
+    ("dataset", "split"),
+)
+
+
+def validate_config(config: dict[str, object]) -> None:
+    """Ensure every run records the minimum experiment contract."""
+    missing = []
+    for section, key in REQUIRED_CONFIG_KEYS:
+        values = config.get(section)
+        if not isinstance(values, dict) or key not in values:
+            missing.append(f"{section}.{key}")
+    if missing:
+        raise ValueError("Missing required configuration keys: " + ", ".join(missing))
+
+
 def run_smoke(config_path: Path, output_dir: Path | None = None) -> Path:
     """Write a resolved experiment record without requiring data or a GPU."""
     with config_path.open("rb") as config_file:
         config = tomllib.load(config_file)
+    validate_config(config)
 
     destination = output_dir or Path(config["paths"]["output_dir"])
     destination.mkdir(parents=True, exist_ok=True)

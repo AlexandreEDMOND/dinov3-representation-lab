@@ -6,7 +6,10 @@ __pycache__/
 # Local datasets and model caches
 data/imagenet/
 data/cache/
+data/embeddings/
+data/huggingface/
 .cache/
+.cache/huggingface/
 
 # Reproducible but potentially large generated artifacts
 outputs/
