@@ -140,11 +140,6 @@ uv run dinov3-lab-feature-smoke \
   --model-path /path/to/local/dinov3-checkpoint
 ```
 
-The metrics record both the absolute local source path and the SHA-256 of
-`model.safetensors`. A local copy is only suitable for development until its weights
-can be verified against the official, pinned checkpoint; do not report its output as
-an official DINOv3 result.
-
 ## Phase 2: reusable feature cache
 
 The cache command stores only L2-normalized global embeddings: `[CLS]` and mean-patch
@@ -155,6 +150,5 @@ without loading the backbone:
 
 ```bash
 uv run dinov3-lab-cache-features \
-  --imagenet-root data/imagenette2-160 \
-  --model-path /path/to/local/dinov3-checkpoint
+  --imagenet-root data/imagenette2-160
 ```

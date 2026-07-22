@@ -26,7 +26,7 @@ This roadmap builds the smallest reproducible system that can answer the project
 
 **Status:** acceptance check passed with the official gated Hugging Face checkpoint on
 an Imagenette small subset: ten images produced global embeddings and final patch tokens
-without gradients. The earlier locally supplied checkpoint remains development-only.
+without gradients.
 
 ## Phase 2 — Feature extraction and cache
 
@@ -41,8 +41,7 @@ without gradients. The earlier locally supplied checkpoint remains development-o
 
 **Status:** acceptance check passed with the official gated Hugging Face checkpoint on
 a 20-image-per-split Imagenette subset. The second run reused every complete cache
-without loading the backbone. The earlier locally supplied checkpoint remains
-development-only.
+without loading the backbone.
 
 ## Phase 3 — ImageNet frozen-feature benchmark
 
