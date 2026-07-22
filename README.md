@@ -111,3 +111,20 @@ The smoke command requires neither ImageNet nor a GPU. It writes the fully resol
 The smoke configuration records the baseline experiment contract: paths, device, seed,
 model identifier, selected layer, pooling method, resolution, and dataset split. Future
 experiment configurations must keep these fields so runs remain comparable.
+
+## Phase 1: backbone and data smoke test
+
+Install the Phase 1 dependencies, accept the access conditions for the gated DINOv3 model
+on Hugging Face, and authenticate locally if required. Then provide ImageNet in the
+ImageFolder-compatible layout `data/imagenet/{train,val}/<class>/image.jpg` and run:
+
+```bash
+uv sync
+uv run dinov3-lab-feature-smoke
+```
+
+The command validates that train and validation class mappings match, chooses a seeded
+ten-image validation subset, applies the official LVD-1689M evaluation transform, and
+writes global-embedding and final patch-token shapes to
+`outputs/phase1-smoke/metrics/feature-smoke.json`. The pinned checkpoint revision and
+the selected sample paths are stored with the result.
