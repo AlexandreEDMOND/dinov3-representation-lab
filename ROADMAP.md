@@ -24,10 +24,9 @@ This roadmap builds the smallest reproducible system that can answer the project
 
 **Done when:** ten images produce global embeddings and final-layer patch tokens with recorded shapes and no gradients.
 
-**Status:** the local smoke test passed with a locally supplied DINOv3-compatible
-checkpoint and Imagenette. Repeat this acceptance check with the official gated Hugging
-Face checkpoint after access is granted; only that run establishes official DINOv3
-reproducibility.
+**Status:** acceptance check passed with the official gated Hugging Face checkpoint on
+an Imagenette small subset: ten images produced global embeddings and final patch tokens
+without gradients. The earlier locally supplied checkpoint remains development-only.
 
 ## Phase 2 — Feature extraction and cache
 
@@ -40,10 +39,10 @@ reproducibility.
 
 **Done when:** train and validation embeddings for the small subset can be extracted twice with identical metadata and reused without executing the backbone.
 
-**Status:** the train/validation cache smoke test passed on a 20-image-per-split
-Imagenette subset. The second run reused every complete cache without loading the
-backbone. Repeat the cache acceptance check with the official gated checkpoint after
-access is granted.
+**Status:** acceptance check passed with the official gated Hugging Face checkpoint on
+a 20-image-per-split Imagenette subset. The second run reused every complete cache
+without loading the backbone. The earlier locally supplied checkpoint remains
+development-only.
 
 ## Phase 3 — ImageNet frozen-feature benchmark
 
