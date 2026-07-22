@@ -43,11 +43,11 @@ The primary comparison is between the `[CLS]` token and mean-pooled patch tokens
 
 ### 2. Patch-token analysis
 
-For an input image, patch embeddings form a matrix \(X \in \mathbb{R}^{N_{patches} \times D}\). PCA is fitted on a defined sample and the first three components are mapped to RGB:
+For an input image, patch embeddings form a matrix $X \in \mathbb{R}^{N_{patches} \times D}$. PCA is fitted on a defined sample and the first three components are mapped to RGB:
 
-\[
+$$
 X_{PCA} = PCA_3(X)
-\]
+$$
 
 The grid is resized to image resolution to inspect foreground/background separation, object-part coherence, and repeated structures. A selected patch can query cosine similarity against every patch to produce a dense similarity map.
 
@@ -98,7 +98,7 @@ See [ROADMAP.md](ROADMAP.md) for ordered milestones, acceptance criteria, and th
 
 ## Conceptual note
 
-DINOv3 is a self-supervised joint-embedding representation learner. It is related to the line of work that led to JEPA, but it is not itself a predictive JEPA with the defining objective \(P(E(X)) \approx E(Y)\). This repository studies representation quality; it does not claim to implement a JEPA.
+DINOv3 is a self-supervised joint-embedding representation learner. It is related to the line of work that led to JEPA, but it is not itself a predictive JEPA with the defining objective $P(E(X)) \approx E(Y)$. This repository studies representation quality; it does not claim to implement a JEPA.
 
 ## GitHub metadata
 
