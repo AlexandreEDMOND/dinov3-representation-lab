@@ -13,6 +13,7 @@ dependencies = [
 [project.scripts]
 dinov3-lab-smoke = "dinov3_representation_lab.cli:main"
 dinov3-lab-feature-smoke = "dinov3_representation_lab.phase1:main"
+dinov3-lab-cache-features = "dinov3_representation_lab.phase2:main"
 
 [build-system]
 requires = ["uv_build>=0.11.7,<0.12.0"]

@@ -24,6 +24,11 @@ This roadmap builds the smallest reproducible system that can answer the project
 
 **Done when:** ten images produce global embeddings and final-layer patch tokens with recorded shapes and no gradients.
 
+**Status:** the local smoke test passed with a locally supplied DINOv3-compatible
+checkpoint and Imagenette. Repeat this acceptance check with the official gated Hugging
+Face checkpoint after access is granted; only that run establishes official DINOv3
+reproducibility.
+
 ## Phase 2 — Feature extraction and cache
 
 **Goal:** create reusable frozen-backbone embeddings without storing unnecessary dense tensors.
@@ -34,6 +39,11 @@ This roadmap builds the smallest reproducible system that can answer the project
 - Support resumable extraction and validate cache completeness.
 
 **Done when:** train and validation embeddings for the small subset can be extracted twice with identical metadata and reused without executing the backbone.
+
+**Status:** the train/validation cache smoke test passed on a 20-image-per-split
+Imagenette subset. The second run reused every complete cache without loading the
+backbone. Repeat the cache acceptance check with the official gated checkpoint after
+access is granted.
 
 ## Phase 3 — ImageNet frozen-feature benchmark
 
@@ -91,4 +101,3 @@ This roadmap builds the smallest reproducible system that can answer the project
 - Use ViT-B/16 and 448 px only for selected, justified comparisons.
 - Generate patch tokens on demand or on a named subset; never cache dense tokens for the full ImageNet training set by default.
 - Do not add pre-training or full backbone fine-tuning to this roadmap.
-

@@ -1,0 +1,28 @@
+[experiment]
+name = "phase2-feature-cache-smoke"
+seed = 42
+
+[runtime]
+device = "auto"
+
+[paths]
+data_dir = "data"
+output_dir = "outputs/phase2-smoke"
+
+[model]
+id = "facebook/dinov3-vits16-pretrain-lvd1689m"
+revision = "1c5ca6c02d42f58a290bf983d66b85d0cd2b3bcd"
+
+[features]
+layer = "final"
+pooling = "cls"
+resolution = 224
+
+[dataset]
+split = "val"
+splits = ["train", "val"]
+subset_size = 20
+batch_size = 5
+
+[cache]
+dtype = "float32"
