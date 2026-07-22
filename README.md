@@ -95,17 +95,3 @@ docs/                 experiment reports and figures selected for publication
 ## Roadmap
 
 See [ROADMAP.md](ROADMAP.md) for ordered milestones, acceptance criteria, and the planned experiment matrix.
-
-## Conceptual note
-
-DINOv3 is a self-supervised joint-embedding representation learner. It is related to the line of work that led to JEPA, but it is not itself a predictive JEPA with the defining objective $P(E(X)) \approx E(Y)$. This repository studies representation quality; it does not claim to implement a JEPA.
-
-## GitHub metadata
-
-**Description**
-
-`Benchmarking and visualizing pretrained DINOv3 image representations: ImageNet probes, patch-token PCA, retrieval, and robustness analysis.`
-
-**Topics**
-
-`dinov3`, `computer-vision`, `self-supervised-learning`, `representation-learning`, `vision-transformer`, `pytorch`, `huggingface`, `imagenet`, `feature-visualization`, `linear-probe`, `knn`, `pca`
