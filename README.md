@@ -192,3 +192,31 @@ of its 14×14 patch tokens to RGB, and the right panel shows cosine similarity t
 `(6, 6)`. It is qualitative evidence for inspection, not an accuracy metric.
 
 ![Input image, patch-token PCA RGB map, and cosine-similarity map](docs/figures/phase4-patch-token-pca-and-similarity.png)
+
+## Phase 5: controlled representation analysis
+
+The controlled analysis compares early, middle and final layers; `[CLS]` and mean-patch
+pooling; 224 and 448 px; four deterministic perturbations; and nearest-neighbour
+retrieval. It saves a quantitative report, a depth-PCA comparison, a robustness curve,
+and a retrieval grid.
+
+```bash
+uv run dinov3-lab-analyze-representations \
+  --imagenet-root data/imagenette2-160
+```
+
+This smoke configuration is exploratory. Its depth conclusion must be confirmed on
+ImageNet-1k before it is treated as a benchmark result.
+
+### Controlled-analysis representations
+
+The Imagenette smoke run shows progressively more object-aligned PCA structure from
+layer 1 to the final layer. The retrieval grid also makes errors inspectable rather
+than hiding them behind aggregate accuracy; the robustness chart compares each
+perturbation with the unmodified image embedding.
+
+![PCA comparison between early, middle, and final DINOv3 layers](docs/figures/depth-pca.png)
+
+![Embedding cosine similarity and retrieval consistency under perturbations](docs/figures/robustness.png)
+
+![Final-layer nearest-neighbour retrieval examples](docs/figures/retrieval-grid.png)

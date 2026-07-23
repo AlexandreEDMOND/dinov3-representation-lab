@@ -17,6 +17,7 @@ dinov3-lab-feature-smoke = "dinov3_representation_lab.phase1:main"
 dinov3-lab-cache-features = "dinov3_representation_lab.phase2:main"
 dinov3-lab-benchmark-frozen-features = "dinov3_representation_lab.phase3:main"
 dinov3-lab-visualize-patches = "dinov3_representation_lab.phase4:main"
+dinov3-lab-analyze-representations = "dinov3_representation_lab.phase5:main"
 
 [build-system]
 requires = ["uv_build>=0.11.7,<0.12.0"]
