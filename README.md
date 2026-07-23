@@ -220,3 +220,16 @@ perturbation with the unmodified image embedding.
 ![Embedding cosine similarity and retrieval consistency under perturbations](docs/figures/robustness.png)
 
 ![Final-layer nearest-neighbour retrieval examples](docs/figures/retrieval-grid.png)
+
+## Phase 6: baselines and final report
+
+Phase 6 applies the same frozen-feature protocol to DINOv3 ViT-S/16, DINOv2 ViT-S/14,
+and ImageNet-supervised ResNet-50. It records environment, checkpoint revisions,
+parameter counts, runtime, metrics, limitations, and a comparison figure.
+
+```bash
+uv run dinov3-lab-compare-baselines \
+  --imagenet-root data/imagenette2-160
+```
+
+![Frozen-feature linear-probe comparison on the Imagenette smoke subset](docs/figures/baseline-linear-probe-comparison.png)

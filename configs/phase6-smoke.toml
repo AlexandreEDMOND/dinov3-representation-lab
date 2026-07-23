@@ -1,0 +1,52 @@
+[experiment]
+name = "phase6-baseline-comparison-smoke"
+seed = 42
+
+[runtime]
+device = "auto"
+
+[paths]
+data_dir = "data"
+output_dir = "outputs/phase6-smoke"
+
+[model]
+id = "facebook/dinov3-vits16-pretrain-lvd1689m"
+
+[features]
+layer = "final"
+pooling = "cls"
+resolution = 224
+
+[dataset]
+split = "val"
+subset_size = 20
+
+[benchmark]
+batch_size = 5
+knn_k = 5
+query_chunk_size = 256
+reference_chunk_size = 4096
+train_batch_size = 64
+logistic_regression_epochs = 100
+logistic_regression_learning_rate = 0.05
+logistic_regression_weight_decay = 0.0001
+linear_probe_epochs = 100
+linear_probe_learning_rate = 0.001
+linear_probe_weight_decay = 0.0001
+
+[[baseline]]
+name = "DINOv3 ViT-S/16"
+kind = "dinov3"
+model_id = "facebook/dinov3-vits16-pretrain-lvd1689m"
+revision = "1c5ca6c02d42f58a290bf983d66b85d0cd2b3bcd"
+
+[[baseline]]
+name = "DINOv2 ViT-S/14"
+kind = "dinov2"
+model_id = "facebook/dinov2-small"
+revision = "8c0210022ead0e9012784aecff426ff6613bf835"
+
+[[baseline]]
+name = "ResNet-50 ImageNet-1k"
+kind = "resnet50"
+weights = "IMAGENET1K_V2"
