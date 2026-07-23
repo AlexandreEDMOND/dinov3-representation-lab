@@ -183,3 +183,12 @@ uv run dinov3-lab-visualize-patches \
 ```
 
 The PNG figure and its full PCA/query metadata are written under `outputs/phase4-smoke/`.
+
+### Example representation
+
+The following deterministic example uses the final DINOv3 ViT-S/16 layer at 224 px on
+Imagenette. The left panel is the input image, the centre panel maps three PCA components
+of its 14×14 patch tokens to RGB, and the right panel shows cosine similarity to patch
+`(6, 6)`. It is qualitative evidence for inspection, not an accuracy metric.
+
+![Input image, patch-token PCA RGB map, and cosine-similarity map](docs/figures/phase4-patch-token-pca-and-similarity.png)
