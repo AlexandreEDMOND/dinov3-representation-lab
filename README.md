@@ -141,3 +141,45 @@ without loading the backbone:
 uv run dinov3-lab-cache-features \
   --imagenet-root data/imagenette2-160
 ```
+
+## Phase 3: frozen-feature benchmark
+
+Once the Phase 2 train and validation caches are complete, Phase 3 evaluates both
+`[CLS]` and mean-patch embeddings without loading the backbone. It runs exact chunked
+cosine k-NN, multinomial logistic regression, and a PyTorch linear probe, then writes
+Top-1, Top-5, macro per-class accuracy, per-class confusion matrices, and inspectable
+CSV predictions.
+
+```bash
+uv run dinov3-lab-benchmark-frozen-features \
+  --imagenet-root data/imagenette2-160
+```
+
+The JSON summary is written to `outputs/phase3-smoke/metrics/frozen-feature-benchmark.json`.
+
+For ImageNet-1k, first create the full train/validation caches, then run the benchmark:
+
+```bash
+uv run dinov3-lab-cache-features \
+  --config configs/phase2-imagenet.toml \
+  --imagenet-root data/imagenet
+uv run dinov3-lab-benchmark-frozen-features \
+  --config configs/phase3-imagenet.toml \
+  --imagenet-root data/imagenet
+```
+
+The second command is the only Phase 3 command that fits the multinomial logistic
+regression and linear-probe heads; it never trains or reloads the DINOv3 backbone.
+
+## Phase 4: patch-token visualization
+
+Generate a deterministic side-by-side input image, three-component PCA RGB map, and
+cosine-similarity map from a selected query patch. The PCA fit uses patch tokens from
+a recorded seeded sample; dense tokens are computed on demand rather than cached.
+
+```bash
+uv run dinov3-lab-visualize-patches \
+  --imagenet-root data/imagenette2-160
+```
+
+The PNG figure and its full PCA/query metadata are written under `outputs/phase4-smoke/`.

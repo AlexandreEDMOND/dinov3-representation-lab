@@ -1,0 +1,30 @@
+[experiment]
+name = "phase4-patch-token-visualization-smoke"
+seed = 42
+
+[runtime]
+device = "auto"
+
+[paths]
+data_dir = "data"
+output_dir = "outputs/phase4-smoke"
+
+[model]
+id = "facebook/dinov3-vits16-pretrain-lvd1689m"
+revision = "1c5ca6c02d42f58a290bf983d66b85d0cd2b3bcd"
+
+[features]
+layer = "final"
+pooling = "cls"
+resolution = 224
+
+[dataset]
+split = "val"
+
+[visualization]
+pca_split = "val"
+pca_sample_size = 20
+pca_batch_size = 5
+image_index = 0
+query_patch_row = 6
+query_patch_column = 6

@@ -1,0 +1,40 @@
+[experiment]
+name = "phase3-frozen-feature-benchmark-smoke"
+seed = 42
+
+[runtime]
+device = "auto"
+
+[paths]
+data_dir = "data"
+output_dir = "outputs/phase3-smoke"
+feature_cache_dir = "outputs/phase2-smoke/feature-cache"
+
+[model]
+id = "facebook/dinov3-vits16-pretrain-lvd1689m"
+revision = "1c5ca6c02d42f58a290bf983d66b85d0cd2b3bcd"
+
+[features]
+layer = "final"
+pooling = "cls"
+resolution = 224
+
+[dataset]
+split = "val"
+subset_size = 20
+batch_size = 5
+
+[cache]
+dtype = "float32"
+
+[benchmark]
+knn_k = 5
+query_chunk_size = 256
+reference_chunk_size = 4096
+train_batch_size = 64
+logistic_regression_epochs = 100
+logistic_regression_learning_rate = 0.05
+logistic_regression_weight_decay = 0.0001
+linear_probe_epochs = 100
+linear_probe_learning_rate = 0.001
+linear_probe_weight_decay = 0.0001

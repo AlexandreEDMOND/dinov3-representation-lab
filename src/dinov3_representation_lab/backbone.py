@@ -100,3 +100,42 @@ def extract_final_features(model, pixel_values):
     if global_embeddings.requires_grad or patch_tokens.requires_grad:
         raise RuntimeError("Frozen extraction unexpectedly produced tensors requiring gradients.")
     return global_embeddings, patch_tokens
+
+
+def extract_patch_tokens(model, pixel_values, *, layer: str = "final"):
+    """Extract frozen patch tokens from the final layer or a hidden-state index.
+
+    ``layer="final"`` is the last Transformer output. Integer strings address the
+    Hugging Face hidden-state sequence (zero is the embedding output and subsequent
+    indices are Transformer blocks).
+    """
+    torch = _torch()
+    requested_layer = layer.strip().lower()
+    wants_hidden_states = requested_layer != "final"
+    with torch.inference_mode():
+        outputs = model(pixel_values=pixel_values, output_hidden_states=wants_hidden_states)
+    if requested_layer == "final":
+        tokens = outputs.last_hidden_state
+    else:
+        try:
+            index = int(requested_layer)
+        except ValueError as error:
+            raise ValueError("features.layer must be 'final' or a hidden-state index") from error
+        hidden_states = getattr(outputs, "hidden_states", None)
+        if hidden_states is None:
+            raise RuntimeError("The backbone did not return hidden states for the requested layer.")
+        try:
+            tokens = hidden_states[index]
+        except IndexError as error:
+            raise ValueError(
+                f"features.layer index {index} is unavailable; model returned {len(hidden_states)} states"
+            ) from error
+    if tokens is None:
+        raise RuntimeError("The selected layer did not return token features.")
+    register_tokens = int(getattr(model.config, "num_register_tokens", 0))
+    patch_tokens = tokens[:, 1 + register_tokens :]
+    if not patch_tokens.shape[1]:
+        raise RuntimeError("The selected layer output does not contain patch tokens.")
+    if patch_tokens.requires_grad:
+        raise RuntimeError("Frozen patch extraction unexpectedly produced gradients.")
+    return patch_tokens

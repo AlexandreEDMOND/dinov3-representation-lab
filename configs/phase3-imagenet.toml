@@ -1,0 +1,44 @@
+[experiment]
+name = "phase3-imagenet-frozen-feature-benchmark"
+seed = 42
+
+[runtime]
+device = "auto"
+
+[paths]
+data_dir = "data"
+output_dir = "outputs/phase3-imagenet"
+feature_cache_dir = "outputs/phase2-imagenet/feature-cache"
+
+[model]
+id = "facebook/dinov3-vits16-pretrain-lvd1689m"
+revision = "1c5ca6c02d42f58a290bf983d66b85d0cd2b3bcd"
+
+[features]
+layer = "final"
+pooling = "cls"
+resolution = 224
+
+[dataset]
+split = "val"
+subset_size = 50000
+batch_size = 64
+
+[dataset.split_sizes]
+train = 1281167
+val = 50000
+
+[cache]
+dtype = "float16"
+
+[benchmark]
+knn_k = 20
+query_chunk_size = 128
+reference_chunk_size = 16384
+train_batch_size = 1024
+logistic_regression_epochs = 20
+logistic_regression_learning_rate = 0.05
+logistic_regression_weight_decay = 0.0001
+linear_probe_epochs = 20
+linear_probe_learning_rate = 0.001
+linear_probe_weight_decay = 0.0001

@@ -4,6 +4,7 @@ import unittest
 import torch
 
 from dinov3_representation_lab.backbone import (
+    extract_patch_tokens,
     extract_final_features,
     make_lvd1689m_eval_transform,
 )
@@ -12,10 +13,13 @@ from dinov3_representation_lab.backbone import (
 class _FakeDinov3Model:
     config = SimpleNamespace(num_register_tokens=4)
 
-    def __call__(self, *, pixel_values: torch.Tensor) -> SimpleNamespace:
+    def __call__(self, *, pixel_values: torch.Tensor, output_hidden_states: bool = False) -> SimpleNamespace:
         batch_size = pixel_values.shape[0]
         tokens = pixel_values.new_ones((batch_size, 201, 3))
-        return SimpleNamespace(last_hidden_state=tokens, pooler_output=tokens[:, 0])
+        hidden_states = (tokens * 2, tokens * 3) if output_hidden_states else None
+        return SimpleNamespace(
+            last_hidden_state=tokens, pooler_output=tokens[:, 0], hidden_states=hidden_states
+        )
 
 
 class BackboneTests(unittest.TestCase):
@@ -37,3 +41,11 @@ class BackboneTests(unittest.TestCase):
         self.assertEqual(patch_tokens.shape, (2, 196, 3))
         self.assertFalse(global_embeddings.requires_grad)
         self.assertFalse(patch_tokens.requires_grad)
+
+    def test_extracts_patch_tokens_from_a_selected_hidden_state(self) -> None:
+        patch_tokens = extract_patch_tokens(
+            _FakeDinov3Model(), torch.zeros((2, 3, 224, 224)), layer="1"
+        )
+
+        self.assertEqual(patch_tokens.shape, (2, 196, 3))
+        self.assertEqual(float(patch_tokens[0, 0, 0]), 3.0)

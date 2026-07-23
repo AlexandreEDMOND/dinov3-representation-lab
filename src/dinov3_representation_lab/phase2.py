@@ -96,6 +96,19 @@ def _dtype(name: str):
     return choices[name]
 
 
+def _subset_size_for_split(dataset: dict[str, object], split: str) -> int:
+    """Return an optional split-specific cache size, preserving the Phase 2 default."""
+    split_sizes = dataset.get("split_sizes")
+    if split_sizes is None:
+        return int(dataset["subset_size"])
+    if not isinstance(split_sizes, dict) or split not in split_sizes:
+        raise ValueError("dataset.split_sizes must specify every requested split")
+    size = int(split_sizes[split])
+    if size <= 0:
+        raise ValueError("dataset.split_sizes values must be positive")
+    return size
+
+
 def run_feature_cache(
     config_path: Path,
     imagenet_root: Path | None = None,
@@ -121,8 +134,6 @@ def run_feature_cache(
     splits = tuple(str(split) for split in dataset.get("splits", [dataset["split"]]))
     if not splits or any(split not in {"train", "val"} for split in splits):
         raise ValueError("dataset.splits must contain 'train' and/or 'val'")
-    subset_size = int(dataset["subset_size"])
-    ranges = _batch_ranges(subset_size, int(dataset["batch_size"]))
     dtype_name = str(cache_config["dtype"])
     output_dtype = _dtype(dtype_name)
     checkpoint_sha256 = None
@@ -133,6 +144,8 @@ def run_feature_cache(
     caches: dict[str, dict[str, FeatureCache]] = {}
     selected_by_split: dict[str, tuple[ImageNetSample, ...]] = {}
     for split in splits:
+        subset_size = _subset_size_for_split(dataset, split)
+        ranges = _batch_ranges(subset_size, int(dataset["batch_size"]))
         selected_samples = select_deterministic_subset(
             samples_for_split(layout, split), size=subset_size, seed=int(experiment["seed"])
         )
